@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from tqdm import tqdm
+
 
 
 def Web_scraping(max_click_nextpage=3):
@@ -43,7 +45,7 @@ def Web_scraping(max_click_nextpage=3):
     update_list = []
     
     x_path_num = 4
-    for page in range(1, max_click_nextpage + 1):
+    for page in tqdm(range(1, max_click_nextpage + 1)):
         for max_num in range(1, 31):
             time.sleep(1)
             
@@ -74,7 +76,7 @@ def Web_scraping(max_click_nextpage=3):
             time.sleep(0.5)
             
         if page % 5 == 0:
-            print("Netx section")
+            print("Next section")
             next_button = driver.find_element(By.CLASS_NAME, 'arr1.next')
             next_button.click()
             # x_path number 초기화
