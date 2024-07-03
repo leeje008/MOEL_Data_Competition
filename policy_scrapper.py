@@ -8,10 +8,10 @@ from tqdm import tqdm
 
 
 
-def Web_scraping(max_click_nextpage=3):
+def Web_scraping(max_page=3):
     '''
     This function is for web scraping policy reviews from the website of Seoul City.
-    max_click_nextpage: Int
+    max_page: Int
     number of clicks to next page (Default: 3)
     '''
     # Setting up Chrome WebDriver
@@ -44,8 +44,11 @@ def Web_scraping(max_click_nextpage=3):
     category_list = []
     update_list = []
     
+    p_bar = tqdm(range(1, max_page + 1), leave = True)
+
     x_path_num = 4
-    for page in tqdm(range(1, max_click_nextpage + 1)):
+    for page in p_bar:
+            
         for max_num in range(1, 31):
             time.sleep(1)
             
@@ -75,20 +78,23 @@ def Web_scraping(max_click_nextpage=3):
             catalog.click()
             time.sleep(0.5)
             
+        if page == max_page :
+            p_bar.n = max_page
+            p_bar.last_print_n = max_page
+            p_bar.update(0)
+            p_bar.close()
+            break
+            
         if page % 5 == 0:
-            print("Next section")
             next_button = driver.find_element(By.CLASS_NAME, 'arr1.next')
             next_button.click()
             # x_path number 초기화
             x_path_num = 4
         else:
-            print('Next page')
             next_button = driver.find_element(By.XPATH, f'//*[@id="frm"]/div[4]/a[{x_path_num}]')
             next_button.click()
             x_path_num += 1
-        if page == max_click_nextpage :
-            break
-    
+            
     # Save the results to a DataFrame
     df = pd.DataFrame({
         'Title': title_list,
@@ -103,4 +109,4 @@ def Web_scraping(max_click_nextpage=3):
 
 if __name__ == "__main__":
     # Example of running the function
-    df = Web_scraping(max_click_nextpage=8)
+    df = Web_scraping(max_page=8)
