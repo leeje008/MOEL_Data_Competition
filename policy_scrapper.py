@@ -42,6 +42,7 @@ def Web_scraping(max_click_nextpage=3):
     category_list = []
     update_list = []
     
+    x_path_num = 4
     for page in range(1, max_click_nextpage + 1):
         for max_num in range(1, 31):
             time.sleep(1)
@@ -70,12 +71,21 @@ def Web_scraping(max_click_nextpage=3):
             # Click the back button
             catalog = driver.find_element(By.CLASS_NAME, 'icn-list')
             catalog.click()
-            time.sleep(2)
+            time.sleep(0.5)
             
-        if page < max_click_nextpage + 1:
-            print('Next page')
+        if page % 5 == 0:
+            print("Netx section")
             next_button = driver.find_element(By.CLASS_NAME, 'arr1.next')
             next_button.click()
+            # x_path number 초기화
+            x_path_num = 4
+        else:
+            print('Next page')
+            next_button = driver.find_element(By.XPATH, f'//*[@id="frm"]/div[4]/a[{x_path_num}]')
+            next_button.click()
+            x_path_num += 1
+        if page == max_click_nextpage :
+            break
     
     # Save the results to a DataFrame
     df = pd.DataFrame({
